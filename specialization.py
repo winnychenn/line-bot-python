@@ -10,7 +10,9 @@ def manual(event):
   text = ""
   for i in range(len(str1)):
     text += str1[i] + ':{} '
-  return text + '@test123'
+  text += '@test123 \n'
+  text += '(P.S: 專精點數不可以是0 建材綠上是綠專精增加建材點數 城市增益 建材產量預設都是0  戰旗數量 預設是3)'
+  return text
 
 def Tile_Level(Ori_poison,b):
   if Ori_poison+b >=8000:
