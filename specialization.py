@@ -82,13 +82,14 @@ def calculator(event,str0):
           Honor_award = table('榮譽頒發',a)
           if x+y+z+a*22 > Point:
             break
+          print(x+y+z+a*22)
           if Max_exp < Land_exp + Material_for_exp_per_day + Honor_award :
             Max_exp = Land_exp + Material_for_exp_per_day + Honor_award
             Max_Land_investment = x
             Max_Poison = y
             Max_Land_level = Land_level
             Max_material_point = z
-            Max_Honor_award_point = 22
+            Max_Honor_award_point = a*22
 
   now = a=datetime.datetime.now()
   end = datetime.datetime(2020, 11, 9, 10, 00, 0, 0)
