@@ -12,7 +12,7 @@ import configparser
 import sys
 import random
 from lottery import lottery
-from specialization import calculator
+from specialization import calculator, manual
 app = Flask(__name__)
 
 # LINE 聊天機器人的基本資料
@@ -49,12 +49,6 @@ def flush_tile(event):
   )
   return ''
 
-def manual(event):
-  line_bot_api.reply_message(
-    event.reply_token,
-    TextSendMessage(text='專精點數:{} 原始抗毒:{} 現在建材產量:{} 城市增益:{} 建材綠上:{} ＠test123')
-  )
-  return ''
 
 
 
@@ -75,7 +69,7 @@ def pretty_echo(event):
   if str2[0] in str0:
     flush_tile(event)
   elif str2[1] in str0:
-    manual(event)
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text = manual(event) ))
   elif strh in str0:
     for i in range(len ( str2 ) ):
       temp = temp + str2[i] + '\n'
@@ -91,7 +85,7 @@ def pretty_echo(event):
   if str2[2] in str0:
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text= lottery(str0)))
     return ''
-  
+
   line_bot_api.reply_message(event.reply_token,TextSendMessage(text= calculator(event,str0)))
  
 if __name__ == '__main__':

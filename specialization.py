@@ -4,7 +4,13 @@
 from table import table
 import datetime
 
-str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益"]
+str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益", "戰旗數量"]
+
+def manual(event):
+  text = ""
+  for i in range(len(str1)):
+    text += str1[i] + ':{} '
+  return text + '@test123'
 
 def Tile_Level(Ori_poison,b):
   if Ori_poison+b >=8000:
@@ -19,7 +25,6 @@ def Tile_Level(Ori_poison,b):
     return 12
   else:
     return 1
-
 
 def text_split(str0,strx):
   length = len(str0)
@@ -39,12 +44,15 @@ def text_split(str0,strx):
 def calculator(event,str0):
   Land_investment = 0.2                                 #土地投資
   Exp_card = 1                                          #經驗加倍卡   
-  Attack_times = 240                                    #攻擊次數
   Point = int(text_split(str0,str1[0]))                 #專精點數
   Ori_poison = int(text_split(str0,str1[1]))            #原始抗毒
   Material_per_hour = int(text_split(str0,str1[2]))     #原始產量/小時
   Material_18_point = int(text_split(str0,str1[3]))     #綠上增加建材點數
   City_bonus = float(text_split(str0,str1[4]))/100      #城市加成
+  Flag = int(text_split(str0,str1[5]))                  #戰旗數量
+  if Flag == 0 :
+    Flag = 3
+  Attack_times = Flag*80                                #攻擊次數= 戰旗數量*80
   Ori_Material_product_per_hour = Material_per_hour / (1+City_bonus+table('建材提升',Material_18_point))
   Material_for_exp_per_day = 0
   Max_exp = 0
@@ -54,15 +62,13 @@ def calculator(event,str0):
   Max_material_point = 0
   Max_Honor_award_point = 0
   if(Point == 0):
-    line_bot_api.reply_message(event.reply_token,TextSendMessage(text='專精輸入有錯 預設0點專精 你還是洗洗睡吧'))
-    return ''
+    return '專精輸入有錯 預設0點專精 你還是洗洗睡吧'
   for x in range(41):
     Land_honor_point = table('土地榮譽',x)
     for y in range(48):
       Land_level = Tile_Level(Ori_poison,table('抗毒',y))
       if Land_level == 1 :
-        line_bot_api.reply_message(event.reply_token,TextSendMessage(text='fuck! 沒抗毒12都吃不了，你還是吃屎吧。別來鬧！'))
-        return ''
+        return 'fuck! 沒抗毒12都吃不了，你還是吃屎吧。別來鬧！'
       Land_exp = table('土地經驗',Land_level)*(1+Land_investment+Exp_card+Land_honor_point)*Attack_times
       if x+y > Point:
         break
@@ -86,9 +92,9 @@ def calculator(event,str0):
   end = datetime.datetime(2020, 11, 9, 10, 00, 0, 0)
   remain_hours=(end-now).days*24+int((end-now).seconds/3600)
   New_Material_per_hour=int (Ori_Material_product_per_hour * (1+table('建材提升',Max_material_point)+City_bonus) )
-  text1 = ('🌝 專精點數:{} 原始抗毒:{} 建材原本產量:{} 城市增益:{}% \n更新點數後'.format(Point,Ori_poison,Material_per_hour,City_bonus*100))
+  text1 = ('🌝 專精點數:{} 原始抗毒:{} 原始建材產量:{} 城市增益:{}% 戰旗數量:{} \n更新點數後'.format(Point,Ori_poison,Material_per_hour,City_bonus*100,Flag))
   text2 = ('🌚 建材時產量:{},建材日產量:{},\n伊甸結束前可以獲得的建材量:{}'.format(New_Material_per_hour,New_Material_per_hour*24,remain_hours*New_Material_per_hour))
-  text3 = ('🆗  每日刷滿3條耐久共240次,加上經驗加倍卡,刷地土地等級:{},最大專精量:{}'.format(Max_Land_level,int(Max_exp)))
+  text3 = ('🆗  每日刷滿{}戰旗共{}次,加上經驗加倍卡,刷地土地等級:{},最大專精量:{}'.format(Flag,Attack_times,Max_Land_level,int(Max_exp)))
   if Max_Honor_award_point == 22:
     text4 = ('🍗 建材日產量轉換大興土木經驗:{},榮譽頒發經驗:{}'.format(int(New_Material_per_hour*24*0.68),Honor_award))
     text5 = ('🔑 建材18%點數{}, 土地榮譽點數:{}, 抗毒點數:{},榮譽頒發:22, 剩餘點數:{}'.format(Max_material_point,Max_Land_investment,Max_Poison,Point-Max_material_point-Max_Land_investment-Max_Poison-Max_Honor_award_point))
