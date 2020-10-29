@@ -13,6 +13,7 @@ import sys
 import random
 from lottery import lottery
 from specialization import calculator, manual
+from card import single_card, multi_card
 app = Flask(__name__)
 
 # LINE 聊天機器人的基本資料
@@ -41,7 +42,6 @@ def callback():
 
   return 'OK'
 
-
 def flush_tile(event):
   line_bot_api.reply_message(
     event.reply_token,
@@ -59,7 +59,7 @@ def pretty_echo(event):
   str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益"]
   strn = "test123"
   strh = "列舉指令"
-  str2 = ["刷專精時間", "專精參數說明", "抽籤"]
+  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽"]
   temp = ""
   echo = ""
   #if event.source.user_id == "Ueba67a4e14e3e486096171cc12900a81":
@@ -84,9 +84,12 @@ def pretty_echo(event):
     test = ''
   if str2[2] in str0:
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text= lottery(str0)))
-    return ''
-
-  line_bot_api.reply_message(event.reply_token,TextSendMessage(text= calculator(event,str0)))
+  elif str2[3] in str0:
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text = single_card(event) ))
+  elif str2[4] in str0:
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text = multi_card(event) ))
+  else:  
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text= calculator(event,str0)))
  
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=6000)
