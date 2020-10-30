@@ -14,6 +14,7 @@ import random
 from lottery import lottery
 from specialization import calculator, manual
 from card import single_card, multi_card
+from oil import oil
 app = Flask(__name__)
 
 # LINE 聊天機器人的基本資料
@@ -45,7 +46,7 @@ def callback():
 def flush_tile(event):
   line_bot_api.reply_message(
     event.reply_token,
-    TextSendMessage(text='例行刷專精時間 早上9點20分:夏，中午3點30分:糖，晚上10點20:可愛\n 刷到本週結束 下週一開始都去解任務')
+    TextSendMessage(text='例行刷專精時間 早上10點45分:夏，下午5點00分:糖，晚上12點00分:可愛\n 刷到本週結束 下週一開始都去解任務')
   )
   return ''
 
@@ -59,7 +60,7 @@ def pretty_echo(event):
   str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益"]
   strn = "test123"
   strh = "列舉指令"
-  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽"]
+  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價"]
   temp = ""
   echo = ""
   #if event.source.user_id == "Ueba67a4e14e3e486096171cc12900a81":
@@ -76,6 +77,8 @@ def pretty_echo(event):
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text= temp ))
   try:
     test = event.source.group_id
+    if test == 'C603fb2aaf553d5bef57c2e8e467b1311':
+      return ''
     try:
       test = str0.index(strn)
     except:
@@ -88,6 +91,8 @@ def pretty_echo(event):
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text = single_card(event) ))
   elif str2[4] in str0:
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text = multi_card(event) ))
+  elif str2[5] in str0:
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text = oil() ))
   else:  
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text= calculator(event,str0)))
  
