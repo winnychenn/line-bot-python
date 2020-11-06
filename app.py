@@ -13,8 +13,9 @@ import sys
 import random
 from lottery import lottery
 from specialization import calculator, manual
-from card import single_card, multi_card
+from card import single_card, multi_card, random_var
 from oil import oil
+from csvwrite import register, showdata
 app = Flask(__name__)
 
 # LINE 聊天機器人的基本資料
@@ -46,7 +47,8 @@ def callback():
 def flush_tile(event):
   line_bot_api.reply_message(
     event.reply_token,
-    TextSendMessage(text='例行刷專精時間 早上10點45分:夏，下午5點00分:糖，晚上12點00分:可愛\n 刷到本週結束 下週一開始都去解任務')
+    #TextSendMessage(text='例行刷專精時間 早上10點45分:夏，下午5點00分:糖，晚上12點00分:可愛\n 刷到本週結束 下週一開始都去解任務')
+    TextSendMessage(text='請去解任務  感恩～')
   )
   return ''
 
@@ -60,7 +62,7 @@ def pretty_echo(event):
   str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益"]
   strn = "test123"
   strh = "列舉指令"
-  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價"]
+  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價", "註冊暱稱", "查詢資料", "卡池機率"]
   temp = ""
   echo = ""
   #if event.source.user_id == "Ueba67a4e14e3e486096171cc12900a81":
@@ -93,6 +95,12 @@ def pretty_echo(event):
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text = multi_card(event) ))
   elif str2[5] in str0:
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text = oil() ))
+  elif str2[6] in str0:
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text= register(event.source.user_id,event.message.text.strip('@test123'+' '+str2[6]+' ')) ))
+  elif str2[7] in str0:
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text = showdata(event.source.user_id) )) 
+  elif str2[8] in str0:
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text = random_var() ))
   else:  
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text= calculator(event,str0)))
  
