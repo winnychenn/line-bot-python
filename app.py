@@ -63,6 +63,7 @@ def pretty_echo(event):
   strn = "test123"
   strh = "列舉指令"
   str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價", "註冊暱稱", "查詢資料", "卡池機率"]
+  strcard = "抽卡說明"
   temp = ""
   echo = ""
   #if event.source.user_id == "Ueba67a4e14e3e486096171cc12900a81":
@@ -76,7 +77,9 @@ def pretty_echo(event):
   elif strh in str0:
     for i in range(len ( str2 ) ):
       temp = temp + str2[i] + '\n'
-    line_bot_api.reply_message(event.reply_token,TextSendMessage(text= temp ))
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text= temp+strcard ))
+  elif strcard in str0:
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text = "賽季獎勵 (不累積資料) \n@test123  抽卡 指定池\n金卡池 (累積資料)\n＠test123 抽卡\n＠test123 十連抽\n先抽卡後可以註冊,註冊後可以註冊暱稱\n" ))
   try:
     test = event.source.group_id
     if test == 'C603fb2aaf553d5bef57c2e8e467b1311':

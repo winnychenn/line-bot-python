@@ -6,6 +6,13 @@ random_x = 0.015
 random_golden = 0.055
 random_purple = 0.23
 random_blue = 0.7
+s1 = ['龍怒','鷹眼','狂蟒','昨日','聖君','閃靈','勇者','禁衛','獵鷹']
+s2 = ['子爵','騎士','審判','執行','上尉','獵豹']
+s3 = ['祭司','自由','少校','先驅','遠視','喪鐘']
+s4 = ['主宰','毒行','天降','政委','蜂鳥','凱薩']
+x1 = ['玫瑰','遊牧','猛漢','愛國','鋼鐵','器修','不死','紅帽','漫遊','追蹤']
+x2 = ['爆食','修女','天國','阿堆','斯溫','莫離','獨狼','死騎','神風','暴怒']
+
 
 def random_table(color):
   if color == 'x':
@@ -57,8 +64,21 @@ def record(event,nox):
 
 def single_card(event):
   flag = random.randint(0, 1000)
+  if 's1' in event.message.text:
+     return goldpool(s1)
+  elif 's2' in event.message.text:
+     return goldpool(s2)
+  elif 's3' in event.message.text:
+     return goldpool(s3)
+  elif 's4' in event.message.text:
+     return goldpool(s4)
+  elif 'x1' in event.message.text:
+     return goldpool(x1)
+  elif 'x2' in event.message.text:
+     return goldpool(x2)
+
   if flag % 1000 < random_table('x'):
-    result = xpool()
+    result = goldpool(x1+x2)
   elif flag % 1000 < random_table('golden'):
     result = '普金'
   elif flag % 1000 < random_table('purple'):
@@ -81,48 +101,12 @@ def multi_card(event):
   for i in range(11):
     multi_result += single_card(event) + ', '
   return multi_result
-
-
-def xpool():
+ 
+def goldpool(pool):
+  pool_size = len(pool)
   flag = random.randint(0, 1000)
-  if flag % 1000%20 == 1:
-    result = '神風'
-  elif flag % 1000%20 == 2:
-    result = '暴怒'
-  elif flag % 1000%20 == 3:
-    result = '不死'
-  elif flag % 1000%20 == 4:
-    result = '鋼鐵'
-  elif flag % 1000%20 == 5:
-    result = '漫遊'
-  elif flag % 1000%20 == 6:
-    result = '爆食'
-  elif flag % 1000%20 == 7:
-    result = '汽修'
-  elif flag % 1000%20 == 8:
-    result = '紅帽'
-  elif flag % 1000%20 == 9:
-    result = '獨狼'
-  elif flag % 1000%20 == 10:
-    result = '瓦爾'
-  elif flag % 1000%20 == 11:
-    result = '玫瑰'
-  elif flag % 1000%20 == 12:
-    result = '修女'
-  elif flag % 1000%20 == 13:
-    result = '死騎'
-  elif flag % 1000%20 == 14:
-    result = '阿堆'
-  elif flag % 1000%20 == 15:
-    result = '愛國'
-  elif flag % 1000%20 == 16:
-    result = '追蹤'
-  elif flag % 1000%20 == 17:
-    result = '天國'
-  elif flag % 1000%20 == 18:
-    result = '遊牧'
-  elif flag % 1000%20 == 19:
-    result = '猛漢'
-  elif flag % 1000%20 == 0:
-    result = '斯溫'
-  return result
+  return pool[flag%pool_size]
+
+
+if __name__ == '__main__':
+  goldpool(x1+x2)
