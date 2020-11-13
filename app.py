@@ -29,7 +29,7 @@ handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
 def callback():
-  print("test111", file=sys.stderr)
+#  print("test111", file=sys.stderr)
   signature = request.headers['X-Line-Signature']
 
   body = request.get_data(as_text=True)
@@ -58,9 +58,10 @@ def flush_tile(event):
 @handler.add(MessageEvent, message=TextMessage)
 def pretty_echo(event):
   str0 = event.message.text
+  print(event, file=sys.stderr)
   print(str0, file=sys.stderr)
   str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益"]
-  strn = "test123"
+  strn = "瑪莎拉蒂"
   strh = "列舉指令"
   str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價", "註冊暱稱", "查詢資料", "卡池機率"]
   strcard = "抽卡說明"
@@ -85,7 +86,7 @@ def pretty_echo(event):
     if test == 'C603fb2aaf553d5bef57c2e8e467b1311':
       return ''
     try:
-      test = str0.index(strn)
+      test = str0.index("@"+strn)
     except:
       return ''
   except:
@@ -99,7 +100,7 @@ def pretty_echo(event):
   elif str2[5] in str0:
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text = oil() ))
   elif str2[6] in str0:
-    line_bot_api.reply_message(event.reply_token,TextSendMessage(text= register(event.source.user_id,event.message.text.strip('@test123'+' '+str2[6]+' ')) ))
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text= register(event.source.user_id,event.message.text.strip(strn+' '+str2[6]+' ')) ))
   elif str2[7] in str0:
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text = showdata(event.source.user_id) )) 
   elif str2[8] in str0:
