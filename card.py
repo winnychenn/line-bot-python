@@ -1,18 +1,21 @@
 import random
 import csv
 from csvwrite import write
- 
-random_x = 0.015
-random_golden = 0.055
-random_purple = 0.23
-random_blue = 0.7
+import configparser
+config = configparser.ConfigParser()
+
+config.read('config.ini') 
+random_x = float(config['card-random']['random_x'] )
+random_golden = float(config['card-random']['random_golden'])
+random_purple = float(config['card-random']['random_purple'])
+random_blue = float(config['card-random']['random_blue'])
 s1 = ['龍怒','鷹眼','狂蟒','昨日','聖君','閃靈','勇者','禁衛','獵鷹']
 s2 = ['子爵','騎士','審判','執行','上尉','獵豹']
 s3 = ['祭司','自由','少校','先驅','遠視','喪鐘']
 s4 = ['主宰','毒行','天降','政委','蜂鳥','凱薩']
-x1 = ['玫瑰','遊牧','猛漢','愛國','鋼鐵','器修','不死','紅帽','漫遊','追蹤']
-x2 = ['爆食','修女','天國','阿堆','斯溫','莫離','獨狼','死騎','神風','暴怒']
-
+x1 = ['玫瑰','遊牧','猛漢','愛國','鋼鐵','器修','不死','紅帽','漫遊','追蹤','叢林']
+x2 = ['爆食','修女','天國','阿堆','斯溫','莫離','獨狼','死騎','神風','暴怒','預言']
+xpool = ['預言', '玫瑰', '汽修', '獨狼', '神風', '愛國']
 
 def random_table(color):
   if color == 'x':
@@ -76,9 +79,11 @@ def single_card(event):
      return goldpool(x1)
   elif 'x2' in event.message.text:
      return goldpool(x2)
+  #elif '賽季池' in event.message.text:
+  #   return goldpool(xpool)
 
   if flag % 1000 < random_table('x'):
-    result = goldpool(x1+x2)
+    result = goldpool(xpool)
   elif flag % 1000 < random_table('golden'):
     result = '普金'
   elif flag % 1000 < random_table('purple'):

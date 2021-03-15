@@ -16,6 +16,7 @@ from specialization import calculator, manual
 from card import single_card, multi_card, random_var
 from oil import oil
 from csvwrite import register, showdata
+from supermg import write_doc, read_doc
 app = Flask(__name__)
 
 # LINE 聊天機器人的基本資料
@@ -25,11 +26,12 @@ config.read('config.ini')
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
+SUPER_MANAGER=['U6b5b5168c4a6ad4cab5026788dc1a612']
 
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
 def callback():
-#  print("test111", file=sys.stderr)
+  #print("test111", file=sys.stderr)
   signature = request.headers['X-Line-Signature']
 
   body = request.get_data(as_text=True)
@@ -45,12 +47,11 @@ def callback():
   return 'OK'
 
 def flush_tile(event):
+  flush_tile_text=read_doc('super-manager','設定戰旗時間')
   line_bot_api.reply_message(
     event.reply_token,
-    #TextSendMessage(text='例行刷專精時間 早上10點45分:夏，下午5點00分:糖，晚上12點00分:可愛\n 刷到本週結束 下週一開始都去解任務')
-    TextSendMessage(text='請去解任務  感恩～')
+    TextSendMessage(text="戰旗時間為: "+flush_tile_text)
   )
-  return ''
 
 
 
@@ -65,12 +66,19 @@ def pretty_echo(event):
   strh = "列舉指令"
   str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價", "註冊暱稱", "查詢資料", "卡池機率"]
   strcard = "抽卡說明"
+  strsuper = ["設定戰旗時間"]
   temp = ""
   echo = ""
   #if event.source.user_id == "Ueba67a4e14e3e486096171cc12900a81":
   #  echo = event.message.text
   #  line_bot_api.reply_message(event.reply_token,TextSendMessage(text= "羽靈echo:"+echo))
   #print(event.source.user_id,echo)
+  if event.source.user_id in SUPER_MANAGER:
+  # super manager
+    if strsuper[0] in str0:
+      write_doc(strsuper[0],'super-manager',str0.strip(strsuper[0]+' '))
+      flush_tile(event)
+      return ''
   if str2[0] in str0:
     flush_tile(event)
   elif str2[1] in str0:
@@ -84,7 +92,8 @@ def pretty_echo(event):
   try:
     test = event.source.group_id
     if test == 'C603fb2aaf553d5bef57c2e8e467b1311':
-      return ''
+      print(test, file=sys.stderr)
+#      return ''
     try:
       test = str0.index("@"+strn)
     except:
@@ -110,7 +119,6 @@ def pretty_echo(event):
  
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=6000)
-   
 
 
 

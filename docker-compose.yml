@@ -9,6 +9,12 @@ services:
     restart: always
     ports: 
       - 6000:6000
+  trainning3:
+    container_name: trainning3
+    image: infominer.azurecr.io/trainning3:v${version}
+    restart: always
 networks:  
   prometheus_back-tier:
     external: true
+
+
