@@ -4,14 +4,14 @@
 from table import table
 import datetime
 
-str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益", "戰旗數量"]
+str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益","經驗加成","建材減免", "戰旗數量"]
 
 def manual(event):
   text = ""
   for i in range(len(str1)):
     text += str1[i] + ':{} '
   text += '@瑪莎拉蒂 \n'
-  text += '(P.S: 專精點數不可以是0 建材綠上是綠專精增加建材點數 城市增益 建材產量預設都是0  戰旗數量 預設是3)'
+  text += '(P.S: 專精點數不可以是0 \n建材綠上是綠專精增加建材點數 城市增益 建材產量 預設都是0 \n建築師預設經驗加成是0 建材減免是0  \n戰旗數量 預設是3)'
   return text
 
 def Tile_Level(Ori_poison,b):
@@ -51,8 +51,10 @@ def calculator(event,str0):
   Material_per_hour = int(text_split(str0,str1[2]))     #原始產量/小時
   Material_18_point = int(text_split(str0,str1[3]))     #綠上增加建材點數
   City_bonus = float(text_split(str0,str1[4]))/100      #城市加成
-  Flag = int(text_split(str0,str1[5]))                  #戰旗數量
-  MHR = 0.6                                             #materials honor ratio建材榮譽比值
+  Arcbonus = int(text_split(str0,str1[5]))/100     #建築師經驗加成
+  Arcreduce = int(text_split(str0,str1[6]))/100    #建築師建材減免
+  Flag = float(text_split(str0,str1[7]))                #戰旗數量
+  MHR = 0.687*((Arcbonus+3.9)/3.9)*(0.73/(0.73-Arcreduce))  #materials honor ratio建材榮譽比值
   if Flag == 0 :
     Flag = 3
   Attack_times = Flag*80                                #攻擊次數= 戰旗數量*80
@@ -94,20 +96,21 @@ def calculator(event,str0):
             Max_Land_exp = Land_exp
 
   now = a=datetime.datetime.now()
-  end = datetime.datetime(2021, 3, 29, 10, 00, 0, 0)
+  end = datetime.datetime(2021, 6, 7, 10, 00, 0, 0)
   remain_hours=(end-now).days*24+int((end-now).seconds/3600)
   New_Material_per_hour=int (Ori_Material_product_per_hour * (1+table('建材提升',Max_material_point)+City_bonus) )
   text1 = ('🌝 專精點數:{} 原始抗毒:{} 原始建材產量:{} 城市增益:{:.1f}% 戰旗數量:{} \n更新點數後'.format(Point,Ori_poison,Material_per_hour,City_bonus*100,Flag))
   text2 = ('🌚 建材時產量:{},建材日產量:{},\n伊甸結束前可以獲得的建材量:{}'.format(New_Material_per_hour,New_Material_per_hour*24,remain_hours*New_Material_per_hour))
-  text3 = ('🆗  每日刷滿{}戰旗共{}次,加上經驗加倍卡,刷地土地等級:{},最大專精量:{}'.format(Flag,Attack_times,Max_Land_level,int(Land_exp)))
+  text3 = ('🆗  每日刷滿{}戰旗共{}次,加上經驗加倍卡,刷地土地等級:{},最大專精量:{}'.format(Flag,Attack_times,Max_Land_level,int(Max_Land_exp)))
   if Max_Honor_award_point == 22:
     text4 = ('🍗 建材日產量轉換大興土木經驗:{},榮譽頒發經驗:{}'.format(int(New_Material_per_hour*24*MHR),Honor_award))
     text5 = ('🔑 建材18%點數{}, 土地榮譽點數:{}, 抗毒點數:{},榮譽頒發:22, 剩餘點數:{}'.format(Max_material_point,Max_Land_investment,Max_Poison,Point-Max_material_point-Max_Land_investment-Max_Poison-Max_Honor_award_point))
   else:
     text4 = ('🍗 建材日產量轉換大興土木經驗:{}'.format(int(New_Material_per_hour*24*MHR)))
     text5 = ('🔑 建材18%點數:{}, 土地榮譽點數:{},抗毒點數:{}, 剩餘點數:{}'.format(Max_material_point,Max_Land_investment,Max_Poison,Point-Max_material_point-Max_Land_investment-Max_Poison))
-  text6 = ('每日最大專精量:{}'.format(int(Max_exp)))
-  text7 = ('🚫 投資理財 有賺有賠 使用前請詳閱公開說明書')
+  text6 = ('建築師經驗加成:{}, 建築師建材減免:{},\n建材榮譽比值:{:.3f}'.format(int(text_split(str0,str1[5]))/100,int(text_split(str0,str1[6]))/100,MHR))
+  text7 = ('每日最大專精量:{}'.format(int(Max_exp)))
+  text8 = ('🚫 投資理財 有賺有賠 使用前請詳閱公開說明書')
    
 
   print(text1)
@@ -116,6 +119,6 @@ def calculator(event,str0):
   print(text4)
   print(text5)
   
-  return text1+"\n----------------------------\n"+text2+"\n----------------------------\n"+text3+"\n----------------------------\n"+text4+"\n----------------------------\n"+text5+"\n----------------------------\n"+text6+"\n----------------------------\n\n"+text7
+  return text1+"\n----------------------------\n"+text2+"\n----------------------------\n"+text3+"\n----------------------------\n"+text4+"\n----------------------------\n"+text5+"\n----------------------------\n"+text6+"\n----------------------------\n"+text7+"\n----------------------------\n\n"+text8
 
 

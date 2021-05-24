@@ -69,10 +69,8 @@ def pretty_echo(event):
   strsuper = ["設定戰旗時間"]
   temp = ""
   echo = ""
-  #if event.source.user_id == "Ueba67a4e14e3e486096171cc12900a81":
-  #  echo = event.message.text
-  #  line_bot_api.reply_message(event.reply_token,TextSendMessage(text= "羽靈echo:"+echo))
-  #print(event.source.user_id,echo)
+  #if event.source.user_id == "U6b5b5168c4a6ad4cab5026788dc1a612":
+  #  line_bot_api.reply_message(event.reply_token,TextSendMessage(text= "@U6b5b5168c4a6ad4cab5026788dc1a612"))
   if event.source.user_id in SUPER_MANAGER:
   # super manager
     if strsuper[0] in str0:
