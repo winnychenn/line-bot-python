@@ -19,6 +19,7 @@ from oil import oil
 from csvwrite import register, showdata
 from supermg import write_doc, read_doc
 from weather import get
+from stone import stone
 app = Flask(__name__)
 
 # LINE 聊天機器人的基本資料
@@ -67,7 +68,7 @@ def pretty_echo(event):
   str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益"]
   strn = "瑪莎拉蒂"
   strh = "列舉指令"
-  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價", "註冊暱稱", "查詢資料", "卡池機率", "天氣"]
+  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價", "註冊暱稱", "查詢資料", "卡池機率", "天氣","猜拳"]
   strcard = "抽卡說明"
   strsuper = ["設定戰旗時間"]
   temp = ""
@@ -121,6 +122,8 @@ def pretty_echo(event):
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市,不要亂打")) 
     else:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text=get(city)))
+  elif str2[10] in str0:
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text=stone(str0.replace(str2[10],"").replace(" ","").replace('@瑪莎拉蒂',""))))
   else:  
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text= calculator(event,str0)))
  
