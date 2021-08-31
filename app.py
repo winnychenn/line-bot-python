@@ -3,9 +3,10 @@
 
 import requests
 from flask import Flask, request, abort
-from linebot import LineBotApi, WebhookHandler
+from linebot import LineBotApi, WebhookHandler, WebhookParser
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, CarouselTemplate, CarouselColumn, URIAction
+from argparse import ArgumentParser
 #from __future__ import unicode_literals
 import os
 import configparser
@@ -17,6 +18,7 @@ from card import single_card, multi_card, random_var
 from oil import oil
 from csvwrite import register, showdata
 from supermg import write_doc, read_doc
+from weather import get
 app = Flask(__name__)
 
 # LINE 聊天機器人的基本資料
@@ -27,6 +29,7 @@ line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
 SUPER_MANAGER=['U6b5b5168c4a6ad4cab5026788dc1a612']
+cities = ['基隆市','嘉義市','臺北市','嘉義縣','新北市','臺南市','桃園縣','高雄市','新竹市','屏東縣','新竹縣','臺東縣','苗栗縣','花蓮縣','臺中市','宜蘭縣','彰化縣','澎湖縣','南投縣','金門縣','雲林縣','連江縣']
 
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
@@ -64,7 +67,7 @@ def pretty_echo(event):
   str1 = ["專精點數", "原始抗毒", "建材產量", "建材綠上", "城市增益"]
   strn = "瑪莎拉蒂"
   strh = "列舉指令"
-  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價", "註冊暱稱", "查詢資料", "卡池機率"]
+  str2 = ["刷專精時間", "專精參數說明", "抽籤", "抽卡", "十連抽", "油價", "註冊暱稱", "查詢資料", "卡池機率", "天氣"]
   strcard = "抽卡說明"
   strsuper = ["設定戰旗時間"]
   temp = ""
@@ -112,6 +115,12 @@ def pretty_echo(event):
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text = showdata(event.source.user_id) )) 
   elif str2[8] in str0:
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text = random_var() ))
+  elif str2[9] in str0:
+    city=str0.replace(str2[9],"").replace(" ","").replace('台','臺').replace('@瑪莎拉蒂',"")
+    if(not (city in cities)):
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text="查詢格式為: 天氣 縣市,不要亂打")) 
+    else:
+        line_bot_api.reply_message(event.reply_token,TextSendMessage(text=get(city)))
   else:  
     line_bot_api.reply_message(event.reply_token,TextSendMessage(text= calculator(event,str0)))
  
